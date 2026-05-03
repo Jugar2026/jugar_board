@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>JUGAR Cork Board</title>
+  <title>PUBLIC NOTICES</title>
 
   <style>
     * {
@@ -13,23 +13,46 @@
 
     body {
       margin: 0;
-      font-family: "Helvetica Neue", Arial, sans-serif;
-      background: #f4efe6;
-      color: #2f241b;
+      font-family: Georgia, "Times New Roman", "Helvetica Neue", Arial, sans-serif;
+      color: #251f1a;
+      background: #8f3f28;
     }
 
     .app {
       width: 100%;
       min-height: 100vh;
-      padding: 24px;
+      padding: 28px;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.18) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(135deg, #9f472d 0%, #bd6742 35%, #7b2f22 100%);
+      background-size: 92px 42px, 92px 42px, cover;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(0deg, transparent 47%, rgba(60,20,10,0.35) 48%, rgba(60,20,10,0.35) 52%, transparent 53%),
+        linear-gradient(90deg, transparent 48%, rgba(60,20,10,0.28) 49%, rgba(60,20,10,0.28) 51%, transparent 52%);
+      background-size: 92px 42px;
+      opacity: 0.7;
+      z-index: 0;
     }
 
     .top {
+      position: relative;
+      z-index: 2;
+      width: min(980px, 100%);
+      margin: 0 auto 16px;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 10px;
     }
 
     .top-buttons {
@@ -38,25 +61,22 @@
       flex-wrap: wrap;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 28px;
-      letter-spacing: 0.03em;
-    }
-
     .post-button,
     .admin-button {
-      border: none;
-      background: #2f241b;
+      border: 1px solid rgba(255,255,255,0.75);
+      background: rgba(36, 28, 22, 0.88);
       color: #fff;
-      padding: 12px 20px;
-      border-radius: 999px;
+      padding: 10px 16px;
+      border-radius: 2px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      font-family: Georgia, "Times New Roman", serif;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
     }
 
     .admin-button {
-      background: #6f4a2d;
+      background: rgba(82, 61, 43, 0.9);
     }
 
     .post-button:hover,
@@ -66,43 +86,135 @@
 
     .admin-status {
       display: none;
-      margin-bottom: 12px;
-      padding: 10px 14px;
-      background: #fff7d1;
-      border: 1px solid rgba(0,0,0,0.12);
-      border-radius: 12px;
-      font-size: 14px;
-    }
-
-    .board {
       position: relative;
-      width: 100%;
-      min-height: 760px;
-      border-radius: 22px;
-      overflow: hidden;
-      padding: 28px;
-      background:
-        radial-gradient(circle at 20px 20px, rgba(90, 50, 20, 0.18) 2px, transparent 3px),
-        linear-gradient(135deg, #b8753c, #8c5528);
-      background-size: 42px 42px, cover;
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.25), 0 18px 40px rgba(0,0,0,0.18);
+      z-index: 2;
+      width: min(980px, 100%);
+      margin: 0 auto 14px;
+      padding: 10px 14px;
+      background: #f6eedb;
+      border: 1px solid rgba(0,0,0,0.2);
+      font-size: 13px;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.2);
     }
 
-    .board::before {
+    .notice-board-wrap {
+      position: relative;
+      z-index: 1;
+      width: min(980px, 100%);
+      margin: 18px auto 0;
+      filter: drop-shadow(0 24px 28px rgba(0,0,0,0.38));
+    }
+
+    .roof {
+      width: 76%;
+      height: 86px;
+      margin: 0 auto -2px;
+      background:
+        linear-gradient(#f1eee5, #cfc6b6);
+      clip-path: polygon(50% 0%, 100% 78%, 96% 100%, 4% 100%, 0% 78%);
+      border: 1px solid rgba(0,0,0,0.25);
+      position: relative;
+    }
+
+    .roof::before {
       content: "";
       position: absolute;
-      inset: 14px;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 16px;
+      left: 50%;
+      top: 10px;
+      transform: translateX(-50%);
+      width: 88%;
+      height: 12px;
+      background: rgba(255,255,255,0.55);
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+      opacity: 0.65;
+    }
+
+    .board-title {
+      position: absolute;
+      left: 50%;
+      bottom: 13px;
+      transform: translateX(-50%);
+      width: 90%;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(22px, 4vw, 42px);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #17130f;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+      white-space: nowrap;
+    }
+
+    .notice-case {
+      background: #ddd8cb;
+      border: 14px solid #e8e3d6;
+      outline: 2px solid rgba(0,0,0,0.22);
+      min-height: 760px;
+      position: relative;
+      box-shadow:
+        inset 0 0 0 3px rgba(255,255,255,0.5),
+        inset 0 0 38px rgba(0,0,0,0.18);
+    }
+
+    .notice-case::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(0,0,0,0.18);
       pointer-events: none;
+      z-index: 1;
+    }
+
+    .pin-area {
+      position: relative;
+      min-height: 730px;
+      margin: 14px;
+      background:
+        radial-gradient(circle at 18px 18px, rgba(0,0,0,0.07) 1px, transparent 2px),
+        linear-gradient(135deg, #d8d0bd, #efe8d7 40%, #cfc5b1);
+      background-size: 34px 34px, cover;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .pin-area::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.08);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .loading,
+    .empty,
+    .hint {
+      position: relative;
+      z-index: 2;
+      margin: 14px;
+      font-size: 13px;
+      color: rgba(0,0,0,0.58);
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .hint {
+      position: absolute;
+      left: 10px;
+      bottom: 8px;
+      margin: 0;
+      background: rgba(245,239,223,0.78);
+      padding: 5px 8px;
+      border: 1px solid rgba(0,0,0,0.12);
     }
 
     .note {
       width: 210px;
       min-height: 170px;
       padding: 22px 18px 18px;
-      background: #fff4b8;
-      box-shadow: 0 10px 18px rgba(0,0,0,0.22);
+      background: #f7f4e8;
+      box-shadow:
+        0 10px 18px rgba(0,0,0,0.24),
+        inset 0 0 18px rgba(0,0,0,0.04);
       transform: rotate(var(--rotate));
       cursor: grab;
       position: absolute;
@@ -110,51 +222,112 @@
       transition: box-shadow 0.18s ease, transform 0.18s ease;
       user-select: none;
       touch-action: none;
-      z-index: 2;
+      z-index: 3;
+      border: 1px solid rgba(0,0,0,0.13);
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .note.paper-a {
+      background: #fbfaf3;
+      width: 210px;
+      min-height: 178px;
+    }
+
+    .note.paper-b {
+      background: #efe2c1;
+      width: 190px;
+      min-height: 160px;
+    }
+
+    .note.paper-c {
+      background: #edf1e9;
+      width: 230px;
+      min-height: 150px;
+    }
+
+    .note.paper-d {
+      background: #f2f2ee;
+      width: 178px;
+      min-height: 220px;
+    }
+
+    .note.paper-e {
+      background: #f4e8e3;
+      width: 220px;
+      min-height: 190px;
     }
 
     .note:hover {
       transform: rotate(var(--rotate)) translateY(-4px) scale(1.03);
-      box-shadow: 0 16px 26px rgba(0,0,0,0.28);
+      box-shadow: 0 18px 28px rgba(0,0,0,0.32);
     }
 
     .note.dragging {
       cursor: grabbing;
-      z-index: 50;
+      z-index: 80;
       transform: rotate(0deg) scale(1.04);
-      box-shadow: 0 22px 36px rgba(0,0,0,0.35);
+      box-shadow: 0 24px 42px rgba(0,0,0,0.42);
     }
 
     .note::before {
       content: "";
-      width: 18px;
-      height: 18px;
+      width: 14px;
+      height: 14px;
       border-radius: 999px;
-      background: #b8322a;
+      background: #295f48;
       position: absolute;
-      top: 8px;
+      top: 7px;
       left: 50%;
       transform: translateX(-50%);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+      box-shadow:
+        0 2px 5px rgba(0,0,0,0.35),
+        inset 0 1px 2px rgba(255,255,255,0.45);
+      pointer-events: none;
+    }
+
+    .note.paper-b::before {
+      background: #314f8a;
+    }
+
+    .note.paper-c::before {
+      background: #b43b2f;
+    }
+
+    .note.paper-d::before {
+      background: #1f1f1f;
+    }
+
+    .note.paper-e::before {
+      background: #6f8f42;
+    }
+
+    .note::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 8px;
+      height: 1px;
+      background: rgba(0,0,0,0.07);
       pointer-events: none;
     }
 
     .delete-note-button {
       display: none;
       position: absolute;
-      top: -10px;
-      right: -10px;
+      top: -12px;
+      right: -12px;
       width: 30px;
       height: 30px;
       border-radius: 999px;
-      border: none;
-      background: #2f241b;
+      border: 1px solid rgba(255,255,255,0.65);
+      background: #1c1713;
       color: #fff;
       cursor: pointer;
       font-size: 16px;
       line-height: 1;
-      z-index: 80;
-      box-shadow: 0 5px 12px rgba(0,0,0,0.28);
+      z-index: 90;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.35);
     }
 
     .admin-mode .delete-note-button {
@@ -162,46 +335,30 @@
     }
 
     .note-title {
-      margin: 10px 0 10px;
-      font-size: 18px;
+      margin: 8px 0 10px;
+      font-size: 15px;
       font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.35;
       pointer-events: none;
+      border-bottom: 1px solid rgba(0,0,0,0.14);
+      padding-bottom: 6px;
+      font-family: Georgia, "Times New Roman", serif;
     }
 
     .note-body {
       margin: 0;
-      font-size: 14px;
-      line-height: 1.55;
+      font-size: 12.5px;
+      line-height: 1.6;
       white-space: pre-wrap;
       pointer-events: none;
-    }
-
-    .empty {
-      color: rgba(255,255,255,0.9);
-      font-size: 16px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .loading {
-      color: rgba(255,255,255,0.9);
-      position: relative;
-      z-index: 1;
-    }
-
-    .hint {
-      margin: 12px 0 0;
-      color: rgba(255,255,255,0.92);
-      font-size: 13px;
-      position: relative;
-      z-index: 1;
     }
 
     .modal-bg {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0,0,0,0.58);
       z-index: 100;
       justify-content: center;
       align-items: center;
@@ -210,31 +367,35 @@
 
     .modal {
       width: min(560px, 100%);
-      background: #fff8d7;
-      border-radius: 20px;
+      background: #f8f4e7;
+      border: 8px solid #e8e3d6;
       padding: 28px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      box-shadow: 0 22px 70px rgba(0,0,0,0.45);
       position: relative;
+      font-family: "Helvetica Neue", Arial, sans-serif;
     }
 
     .modal h2 {
       margin: 0 0 14px;
-      font-size: 24px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 26px;
+      border-bottom: 1px solid rgba(0,0,0,0.18);
+      padding-bottom: 10px;
     }
 
     .modal p {
       margin: 0;
-      font-size: 16px;
-      line-height: 1.75;
+      font-size: 15px;
+      line-height: 1.8;
       white-space: pre-wrap;
     }
 
     .close {
       position: absolute;
-      top: 14px;
-      right: 14px;
+      top: 12px;
+      right: 12px;
       border: none;
-      background: #2f241b;
+      background: #1c1713;
       color: white;
       border-radius: 999px;
       width: 32px;
@@ -246,7 +407,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.45);
+      background: rgba(0,0,0,0.48);
       z-index: 110;
       justify-content: center;
       align-items: center;
@@ -255,22 +416,25 @@
 
     .form-box {
       width: min(460px, 100%);
-      background: #fff;
-      border-radius: 20px;
+      background: #f8f4e7;
+      border: 8px solid #e8e3d6;
       padding: 24px;
-      box-shadow: 0 18px 50px rgba(0,0,0,0.3);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.42);
+      font-family: "Helvetica Neue", Arial, sans-serif;
     }
 
     .form-box h2 {
       margin: 0 0 16px;
-      font-size: 22px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 24px;
+      letter-spacing: 0.03em;
     }
 
     input,
     textarea {
       width: 100%;
-      border: 1px solid #ddd;
-      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.22);
+      background: #fffdf7;
       padding: 12px;
       margin-bottom: 12px;
       font-size: 15px;
@@ -290,45 +454,73 @@
 
     .cancel-button,
     .submit-button {
-      border: none;
-      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.28);
       padding: 10px 16px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      font-family: Georgia, "Times New Roman", serif;
     }
 
     .cancel-button {
-      background: #eee;
-      color: #333;
+      background: #e6dfd0;
+      color: #251f1a;
     }
 
     .submit-button {
-      background: #2f241b;
+      background: #1c1713;
       color: #fff;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       .app {
         padding: 16px;
       }
 
       .top {
-        align-items: flex-start;
-        flex-direction: column;
+        justify-content: center;
       }
 
-      .board {
+      .roof {
+        width: 90%;
+        height: 70px;
+      }
+
+      .board-title {
+        font-size: 22px;
+        bottom: 11px;
+      }
+
+      .notice-case {
+        border-width: 9px;
         min-height: 760px;
-        padding: 20px;
       }
 
-      .note {
-        width: 190px;
+      .pin-area {
+        min-height: 735px;
+        margin: 10px;
+      }
+
+      .note,
+      .note.paper-a,
+      .note.paper-b,
+      .note.paper-c,
+      .note.paper-d,
+      .note.paper-e {
+        width: 175px;
         min-height: 150px;
       }
 
-      .hint {
+      .note-title {
+        font-size: 14px;
+      }
+
+      .note-body {
         font-size: 12px;
+      }
+
+      .hint {
+        font-size: 11px;
       }
     }
   </style>
@@ -337,11 +529,9 @@
 <body>
   <div class="app">
     <div class="top">
-      <h1>JUGAR Board</h1>
-
       <div class="top-buttons">
-        <button class="admin-button" onclick="toggleAdminMode()">管理者</button>
-        <button class="post-button" onclick="openForm()">投稿する</button>
+        <button class="admin-button" onclick="toggleAdminMode()">ADMIN</button>
+        <button class="post-button" onclick="openForm()">POST A NOTICE</button>
       </div>
     </div>
 
@@ -349,23 +539,31 @@
       管理者モード中です。各メモの右上の「×」から削除できます。
     </div>
 
-    <div id="board" class="board">
-      <div id="loading" class="loading">読み込み中...</div>
-      <div id="empty" class="empty" style="display:none;">まだ投稿がありません。</div>
-      <div class="hint">PCではメモをドラッグして動かせます。ダブルクリックで拡大表示できます。</div>
+    <div class="notice-board-wrap">
+      <div class="roof">
+        <div class="board-title">PUBLIC NOTICES</div>
+      </div>
+
+      <div class="notice-case">
+        <div id="board" class="pin-area">
+          <div id="loading" class="loading">読み込み中...</div>
+          <div id="empty" class="empty" style="display:none;">まだ投稿がありません。</div>
+          <div class="hint">Drag notices / Double click to read</div>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- 投稿フォーム -->
   <div id="formBg" class="form-bg">
     <div class="form-box">
-      <h2>メモを投稿する</h2>
-      <input id="titleInput" type="text" placeholder="タイトル" maxlength="40" />
-      <textarea id="bodyInput" placeholder="本文" maxlength="500"></textarea>
+      <h2>POST A NOTICE</h2>
+      <input id="titleInput" type="text" placeholder="Title" maxlength="40" />
+      <textarea id="bodyInput" placeholder="Write your notice" maxlength="500"></textarea>
 
       <div class="form-actions">
-        <button class="cancel-button" onclick="closeForm()">キャンセル</button>
-        <button class="submit-button" onclick="submitNote()">投稿する</button>
+        <button class="cancel-button" onclick="closeForm()">CANCEL</button>
+        <button class="submit-button" onclick="submitNote()">POST</button>
       </div>
     </div>
   </div>
@@ -414,7 +612,8 @@
     const loadingEl = document.getElementById("loading");
     const adminStatusEl = document.getElementById("adminStatus");
 
-    const rotations = ["-3deg", "2deg", "-1.5deg", "3deg", "1deg", "-2.5deg"];
+    const rotations = ["-4deg", "3deg", "-2deg", "4deg", "1.5deg", "-3deg", "2deg"];
+    const paperClasses = ["paper-a", "paper-b", "paper-c", "paper-d", "paper-e"];
 
     let isDragging = false;
     let dragMoved = false;
@@ -458,15 +657,15 @@
     function getRandomPosition() {
       const boardRect = boardEl.getBoundingClientRect();
 
-      const noteWidth = 210;
-      const noteHeight = 170;
+      const noteWidth = 220;
+      const noteHeight = 190;
 
       const maxX = Math.max(20, boardRect.width - noteWidth - 40);
       const maxY = Math.max(80, boardRect.height - noteHeight - 40);
 
       return {
-        x: Math.floor(30 + Math.random() * maxX),
-        y: Math.floor(80 + Math.random() * maxY)
+        x: Math.floor(25 + Math.random() * maxX),
+        y: Math.floor(45 + Math.random() * maxY)
       };
     }
 
@@ -556,11 +755,11 @@
       let newX = event.clientX - boardRect.left - offsetX;
       let newY = event.clientY - boardRect.top - offsetY;
 
-      const maxX = boardEl.clientWidth - currentNoteEl.offsetWidth - 20;
-      const maxY = boardEl.clientHeight - currentNoteEl.offsetHeight - 20;
+      const maxX = boardEl.clientWidth - currentNoteEl.offsetWidth - 16;
+      const maxY = boardEl.clientHeight - currentNoteEl.offsetHeight - 16;
 
-      newX = clamp(newX, 20, maxX);
-      newY = clamp(newY, 60, maxY);
+      newX = clamp(newX, 10, maxX);
+      newY = clamp(newY, 10, maxY);
 
       currentNoteEl.style.left = newX + "px";
       currentNoteEl.style.top = newY + "px";
@@ -608,8 +807,8 @@
       const row = Math.floor(index / 4);
 
       return {
-        x: 35 + col * 235,
-        y: 80 + row * 210
+        x: 24 + col * 220,
+        y: 38 + row * 185
       };
     }
 
@@ -622,7 +821,7 @@
 
       notes.forEach((note, index) => {
         const div = document.createElement("div");
-        div.className = "note";
+        div.className = "note " + paperClasses[index % paperClasses.length];
         div.style.setProperty("--rotate", rotations[index % rotations.length]);
 
         const pos = {
@@ -653,7 +852,7 @@
 
         const body = document.createElement("p");
         body.className = "note-body";
-        body.textContent = note.body.length > 90 ? note.body.slice(0, 90) + "..." : note.body;
+        body.textContent = note.body.length > 120 ? note.body.slice(0, 120) + "..." : note.body;
 
         div.appendChild(deleteButton);
         div.appendChild(title);
