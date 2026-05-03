@@ -32,13 +32,20 @@
       margin-bottom: 20px;
     }
 
+    .top-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     h1 {
       margin: 0;
       font-size: 28px;
       letter-spacing: 0.03em;
     }
 
-    .post-button {
+    .post-button,
+    .admin-button {
       border: none;
       background: #2f241b;
       color: #fff;
@@ -48,8 +55,23 @@
       font-size: 15px;
     }
 
-    .post-button:hover {
+    .admin-button {
+      background: #6f4a2d;
+    }
+
+    .post-button:hover,
+    .admin-button:hover {
       opacity: 0.85;
+    }
+
+    .admin-status {
+      display: none;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      background: #fff7d1;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      font-size: 14px;
     }
 
     .board {
@@ -115,6 +137,28 @@
       transform: translateX(-50%);
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
       pointer-events: none;
+    }
+
+    .delete-note-button {
+      display: none;
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: none;
+      background: #2f241b;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      z-index: 80;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.28);
+    }
+
+    .admin-mode .delete-note-button {
+      display: block;
     }
 
     .note-title {
@@ -294,7 +338,15 @@
   <div class="app">
     <div class="top">
       <h1>JUGAR Board</h1>
-      <button class="post-button" onclick="openForm()">投稿する</button>
+
+      <div class="top-buttons">
+        <button class="admin-button" onclick="toggleAdminMode()">管理者</button>
+        <button class="post-button" onclick="openForm()">投稿する</button>
+      </div>
+    </div>
+
+    <div id="adminStatus" class="admin-status">
+      管理者モード中です。各メモの右上の「×」から削除できます。
     </div>
 
     <div id="board" class="board">
@@ -338,7 +390,8 @@
       orderBy,
       serverTimestamp,
       doc,
-      updateDoc
+      updateDoc,
+      deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -351,12 +404,20 @@
       appId: "1:498899531121:web:7591904e22af9fefcd32d0"
     };
 
+    /*
+      ここを好きな管理者パスワードに変更してください。
+      例：
+      const ADMIN_PASSWORD = "shiika-only-2026";
+    */
+    const ADMIN_PASSWORD = "jugar-admin";
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     const boardEl = document.getElementById("board");
     const emptyEl = document.getElementById("empty");
     const loadingEl = document.getElementById("loading");
+    const adminStatusEl = document.getElementById("adminStatus");
 
     const rotations = ["-3deg", "2deg", "-1.5deg", "3deg", "1deg", "-2.5deg"];
 
@@ -366,6 +427,28 @@
     let currentNoteId = null;
     let offsetX = 0;
     let offsetY = 0;
+    let isAdminMode = false;
+
+    window.toggleAdminMode = function () {
+      if (isAdminMode) {
+        isAdminMode = false;
+        document.body.classList.remove("admin-mode");
+        adminStatusEl.style.display = "none";
+        alert("管理者モードを終了しました。");
+        return;
+      }
+
+      const inputPassword = prompt("管理者パスワードを入力してください。");
+
+      if (inputPassword === ADMIN_PASSWORD) {
+        isAdminMode = true;
+        document.body.classList.add("admin-mode");
+        adminStatusEl.style.display = "block";
+        alert("管理者モードになりました。");
+      } else if (inputPassword !== null) {
+        alert("パスワードが違います。");
+      }
+    };
 
     window.openForm = function () {
       document.getElementById("formBg").style.display = "flex";
@@ -419,6 +502,24 @@
       }
     };
 
+    async function deleteNote(noteId) {
+      if (!isAdminMode) {
+        alert("削除するには管理者モードにしてください。");
+        return;
+      }
+
+      const ok = confirm("この投稿を削除しますか？");
+
+      if (!ok) return;
+
+      try {
+        await deleteDoc(doc(db, "notes", noteId));
+      } catch (error) {
+        console.error(error);
+        alert("削除に失敗しました。Firebaseの設定を確認してください。");
+      }
+    }
+
     function openModal(title, body) {
       document.getElementById("modalTitle").textContent = title;
       document.getElementById("modalBody").textContent = body;
@@ -434,7 +535,6 @@
     }
 
     function startDrag(event, noteEl, noteId) {
-      // マウスの左クリック以外は無視
       if (event.pointerType === "mouse" && event.button !== 0) return;
 
       isDragging = true;
@@ -538,6 +638,20 @@
         div.style.left = pos.x + "px";
         div.style.top = pos.y + "px";
 
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "delete-note-button";
+        deleteButton.textContent = "×";
+        deleteButton.title = "削除";
+
+        deleteButton.addEventListener("pointerdown", (event) => {
+          event.stopPropagation();
+        });
+
+        deleteButton.addEventListener("click", (event) => {
+          event.stopPropagation();
+          deleteNote(note.id);
+        });
+
         const title = document.createElement("h3");
         title.className = "note-title";
         title.textContent = note.title;
@@ -546,6 +660,7 @@
         body.className = "note-body";
         body.textContent = note.body.length > 90 ? note.body.slice(0, 90) + "..." : note.body;
 
+        div.appendChild(deleteButton);
         div.appendChild(title);
         div.appendChild(body);
 
@@ -562,7 +677,6 @@
         div.addEventListener("click", () => {
           if (dragMoved) return;
 
-          // スマホではダブルクリックが難しいので、タップで拡大
           if (window.innerWidth <= 768) {
             openModal(note.title, note.body);
           }
